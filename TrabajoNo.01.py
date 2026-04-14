@@ -28,7 +28,7 @@ def greedy_knapsack(items, capacidad, tipo_sens, k1=1, k2=1, semilla=None):
     if semilla is not None:
         random.seed(semilla)
         random.shuffle(items) # Para heurística al azar
-    
+     
     # Ordenar según indicador
     items_ordenados = sorted(items, key=lambda x: sensibilidad(x, tipo_sens, k1, k2), reverse=True)
     
@@ -233,19 +233,20 @@ def menu():
             # Actualizar global
             valor_global += v_val
             peso_global += v_p
-            for idx, val in enumerate(v_bin):
-                if val == 1: 
-                    item = items_restantes[idx]
-                    vector_global[items.index(item)] = 1
-                    items_restantes.remove(item)
-        
+            items_seleccionados = [items_restantes[i] for i, val in enumerate(v_bin) if val == 1]
+
+            for item in items_seleccionados:
+                vector_global[items.index(item)] = 1
+                items_restantes.remove(item)
         resultados.append(("Descomposición", vector_global, valor_global, peso_global))
 
     # MOSTRAR RESULTADOS
     print("\n--- RESULTADOS ---")
     mejor = max(resultados, key=lambda x: x[2])
     for r in resultados:
-        print(f"Método: {r[0]} | Valor: {r[2]} | Peso: {r[3]}")
+        print(f"\nMétodo: {r[0]}")
+        print(f"Vector: {r[1]}")
+        print(f"Valor: {r[2]} | Peso: {r[3]}")
     
     print(f"\nLA MEJOR SOLUCIÓN ES: {mejor[0]} con Valor: {mejor[2]}")
 
