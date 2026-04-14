@@ -48,12 +48,24 @@ def greedy_knapsack(items, capacidad, tipo_sens, k1=1, k2=1, semilla=None):
 
 # --- ALGORITMO DE REDUCCIÓN ---
 def reduction_knapsack(items, capacidad, tipo_sens, k1=1, k2=1):
-    # Enfoque: ordenar por indicador, eliminar ítems de baja utilidad hasta que quepan
     items_copia = sorted(items, key=lambda x: sensibilidad(x, tipo_sens, k1, k2), reverse=True)
-    while sum(it.peso for it in items_copia) > capacidad and items_copia:
-        items_copia.pop()  # Eliminar el de menor indicador
-    # Aplicar greedy en los restantes
-    return greedy_knapsack(items_copia, capacidad, tipo_sens, k1, k2)
+    
+    peso_actual = sum(it.peso for it in items_copia)
+    
+    #Bucle destructor 
+    while peso_actual > capacidad and items_copia:
+        item_eliminado = items_copia.pop() # Sacamos el peor (el último)
+        peso_actual -= item_eliminado.peso # Actualizamos el peso
+        
+    # Construccion del vector
+    vector_binario = [0] * len(items)
+    valor_total = 0
+    
+    for item in items_copia:
+        valor_total += item.valor
+        vector_binario[items.index(item)] = 1 
+        
+    return vector_binario, valor_total, peso_actual
 
 # --- ALGORITMO DE ALTERNANCIA ---
 def alternating_knapsack(items, capacidad, orden):
